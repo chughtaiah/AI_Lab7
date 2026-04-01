@@ -1,116 +1,162 @@
-# 🧪 AI Stats Lab: Maximum Likelihood Estimation (MLE)
+# AI Lab — Naive Bayes and K-Nearest Neighbors
 
-## 🎯 Overview
+This assignment covers two basic supervised learning methods:
 
-In this lab, you will implement Maximum Likelihood Estimation (MLE) for two important distributions:
-
-- Bernoulli (binary data)
-- Poisson (count data)
+1. **Naive Bayes** for spam / non-spam email classification
+2. **K-Nearest Neighbors (KNN)** for classification on the Iris dataset
 
 ---
 
-## 🎯 You have TWO tasks
+## Repository Structure
+
+```text
+AIstats_lab.py
+test_AIstats_lab.py
+README.md
+```
 
 ---
 
-# 🔵 Task 1: Bernoulli MLE Analysis
+## Q1 — Naive Bayes Spam Classifier
 
-### You must implement:
+Implement a **Naive Bayes classifier** using **simple Maximum Likelihood Estimation (MLE)**.
 
-1. `bernoulli_log_likelihood(data, theta)`  
-2. `bernoulli_mle_with_comparison(data, candidate_thetas=None)`
+### Dataset
 
----
+Use this dataset inside your function:
 
-## 📌 Model
-
-\[
-X_i \in \{0,1\}, \quad P(X=1)=\theta
-\]
-
----
-
-## 🧮 Details
-
-### 1. Log-Likelihood
-
-\[
-\ell(\theta) = \sum x_i \log(\theta) + (1-x_i)\log(1-\theta)
-\]
-
-### Requirements:
-- Data must be non-empty  
-- Values must be 0 or 1  
-- \(0 < \theta < 1\)  
-
----
-
-### 2. MLE Analysis Function
-
-`bernoulli_mle_with_comparison(data, candidate_thetas=None)`
-
-This function should:
-
-- Compute the **MLE of θ** using:
-  \[
-  \hat{\theta} = \frac{1}{n} \sum x_i
-  \]
-
-- Count:
-  - number of successes (1s)
-  - number of failures (0s)
-
-- Compute log-likelihood for each candidate θ
-
----
-
-### Return a dictionary containing:
-
-- `mle` → estimated θ  
-- `num_successes`  
-- `num_failures`  
-- `log_likelihoods` → {θ: log-likelihood}  
-- `best_candidate` → θ with highest likelihood  
-
----
-
-## 💡 Intuition
-
-- Bernoulli models **binary outcomes**  
-- MLE = **observed proportion of successes**
-
----
-
-# 🔴 Task 2: Poisson MLE Analysis
-
-### You must implement:
-
-1. `poisson_log_likelihood(data, lam)`  
-2. `poisson_mle_analysis(data, candidate_lambdas=None)`
-
----
-
-## 📌 Model
-
-\[
-X_i \in \{0,1,2,\dots\}, \quad X_i \sim \text{Poisson}(\lambda)
-\]
-
----
-
-## 🧮 Details
-
-### 1. Log-Likelihood
-
-\[
-\ell(\lambda) = \sum \left[x_i \log(\lambda) - \lambda - \log(x_i!)\right]
-\]
-
-### Requirements:
-- Data must be non-empty  
-- Values must be nonnegative integers  
-- \(\lambda > 0\)  
-
-### Hint:
 ```python
-math.lgamma(x + 1)
+texts = [
+    "win money now",
+    "limited offer win cash",
+    "cheap meds available",
+    "win big prize now",
+    "exclusive offer buy now",
+    "cheap pills buy cheap meds",
+    "win lottery claim prize",
+    "urgent offer win money",
+    "free cash bonus now",
+    "buy meds online cheap",
+    "meeting schedule tomorrow",
+    "project discussion meeting",
+    "please review the report",
+    "team meeting agenda today",
+    "project deadline discussion",
+    "review the project document",
+    "schedule a meeting tomorrow",
+    "please send the report",
+    "discussion on project update",
+    "team sync meeting notes"
+]
+
+labels = np.array([
+    1,1,1,1,1,1,1,1,1,1,
+    0,0,0,0,0,0,0,0,0,0
+])
+```
+
+Where:
+
+* `1 = spam`
+* `0 = non-spam`
+
+### Task
+
+Implement:
+
+```python
+naive_bayes_mle_spam()
+```
+
+### Steps
+
+1. Tokenize the emails
+2. Build the vocabulary
+3. Compute class priors
+4. Compute word probabilities using **MLE**
+5. Predict the class of:
+
+```python
+test_email = "win cash prize now"
+```
+
+### Important
+
+* **Do not use Laplace smoothing**
+* If a word never appears in a class, its probability is 0
+
+### Return
+
+```python
+priors, word_probs, prediction
+```
+
+Where:
+
+* `priors` is a dictionary
+* `word_probs` is a nested dictionary
+* `prediction` is `0` or `1`
+
+---
+
+## Q2 — K-Nearest Neighbors on Iris
+
+Implement **KNN from scratch** on the Iris dataset.
+
+### Task
+
+Implement:
+
+```python
+knn_iris(k=3, test_size=0.2, seed=0)
+```
+
+### Steps
+
+1. Load the Iris dataset
+2. Split into train/test sets
+3. For each test example:
+
+   * compute Euclidean distance to all training examples
+   * find the `k` nearest neighbors
+   * predict by majority vote
+4. Compute train and test accuracy
+
+### Return
+
+```python
+train_accuracy, test_accuracy, predictions
+```
+
+Where:
+
+* `train_accuracy` is a float
+* `test_accuracy` is a float
+* `predictions` is a numpy array of predicted labels on the test set
+
+---
+
+## Rules
+
+* Do not rename functions
+* Do not change return formats
+* Do not use:
+
+  * `sklearn.naive_bayes`
+  * `sklearn.neighbors.KNeighborsClassifier`
+
+---
+
+## Installation
+
+```bash
+pip install numpy scikit-learn pytest
+```
+
+---
+
+## Run Tests
+
+```bash
+pytest -q
+```
